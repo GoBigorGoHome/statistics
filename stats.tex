@@ -1,0 +1,260 @@
+\documentclass[12pt,uft8]{ctexrep}
+% \usepackage[underscores=false,hybrid]{markdown}
+\usepackage{amsmath,amsfonts,amsthm}
+\usepackage{xcolor}
+\usepackage{physics}
+\usepackage[many,documentation]{tcolorbox}
+\usepackage{marginnote}
+\newcommand{\dif}{\mathop{}\!\mathrm{d}}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\Cov}{Cov}
+\newcommand{\intii}{\int_{-\infty}^\infty}
+
+\begin{document}
+格式：
+
+/ 连接的是同一个概念的两个名称
+
+，表示列举
+
+？表示TODO
+
+（）表示注解
+
+\chapter{概率论基础}
+\section{概念}
+\begin{itemize}
+\item 概率空间
+
+A probability space is a triple $(\Omega, \mathcal{F}, P)$ where $\Omega$ is a set of "outcomes," $\mathcal{F}$ is a set of "events," and $P\colon \mathcal{F} \to [0,1] $ is a function that assigns probabilities to events. We assume that $\mathcal{F}$ is a $\sigma$-field (or $\sigma$-algebra), i.e., a (nonempty) collection of subsets of $\Omega$ that satisfy
+
+(i) if $A\in\mathcal{F}$ then $A^c \in\mathcal{F}$, and 
+
+(ii) if $A_i\in\mathcal{F}$ is a countable sequence of sets then $\bigcup_iA_i\in\mathcal{F}$.
+
+Here and in what follows, countable means finite or countably infinite. Since $\bigcap_iA_i = \qty(\bigcup_iA_i^c)^c$, it follows that a $\sigma$-field is closed under countable intersections.
+
+Without $P$, $(\Omega,\mathcal{F})$ is called a measurable space, i.e., it is a space on which we can put a measure. A measure is a nonnegative countably additive set of function; that is, a function $\mu\colon\mathcal{F}\to\mathbb{R}$ with\\
+(i) $\mu(A)\ge\mu(\emptyset) = 0$ for all $A\in\mathcal{F}$, and\\
+(ii) if $A_i\in\mathcal{F}$ is a countable sequence of disjoint sets, then
+\[
+    \mu\qty(\bigcup_iA_i) = \sum_i\mu(A_i)
+\]
+If $\mu(\Omega) = 1$, we call $\mu$ a probability measure. In this book, probability measures are usually denoted by $P$.
+\item 随机试验/随机现象
+\item 样本空间，样本点
+\item 随机事件 abbr. 事件
+\item 事件 $A$ 与 $B$ 相互独立
+\item $n$ 个事件相互独立，两两独立
+\item 随机变量 abbr. RV： $X$，$Y$，……
+
+A real valued function $X$ defined on $\Omega$ is said to be a random variable if for every Borel set $B\in\mathbb R$ we have $X^{-1}(B) = \qty{\omega\colon X(\omega)\in B}\in\mathcal{F}$. When we need to emphasize the $\sigma$-field, we will say that $X$ is $\mathcal{F}$-measurable or write $X\in\mathcal{F}$.（A Borel set is an element of a Borel sigma-algebra.）
+
+这个定义我还不能完全理解，我不理解 Borel set 究竟是什么。我本科概统教材上给出的随机变量的定义是：
+
+设 $\Omega$ 为一个样本空间，若对任意 $\omega\in\Omega$，都有一个实数 $X(\omega)$ 与之对应，则称 $X(\omega)$ 为一个随机变量，并简记为 $X$ 。
+
+\item 分布函数/DF $F(x) := P(X\le x)\quad x\in\mathbb R$
+\item 概率密度函数 abbr. 密度函数/PDF（在下文中，对于连续 RV，“分布”一词一般指概率密度函数）
+\end{itemize}
+
+\section{随机变量的数字特征}
+
+\begin{itemize}
+\item 数学期望 abbr. 期望：$E(X)$
+
+\emph{和的期望等于期望的和，不论独立不独立。}
+
+\item $k$ 阶原点矩： $E(X^k)$
+\item $k$ 阶中心矩：$E\qty{[X-E(X)]^k}$
+\item 方差：$\Var(X) := E\qty{[X-E(X)]^2} =\boxed{\color{blue}{ E(X^2) - [E(X)]^2 }}$（二阶中心矩）
+\item 标准差：$\sigma_X = \sqrt{\Var(X)}$
+\item $X$，$Y$ 的协方差：
+
+$\Cov(X,Y) := E\qty{[X-E(X)] [Y-E(Y)]} = \boxed{\color{blue}E(XY) - E(X)E(Y)}$
+\begin{align*}
+\Var(X+Y)& = E[(X+Y)^2] - [E(X+Y)]^2 \\
+&= E(X^2) - [E(X)]^2 + E(Y^2) - [E(Y)]^2 + 2[E(XY)- E(X)E(Y)] \\
+&= \Var(X) + \Var(Y) + 2\Cov(X,Y) 
+\end{align*}
+一般地，有
+\[\Var{aX+bY} = a^2\Var(X) + b^2\Var(Y) + 2ab\Cov(X,Y)\]
+\item $X$，$Y$ 的线性相关系数：$\rho_{XY} = \dfrac{\Cov(X,Y)}{\sqrt{\Var(X)}\sqrt{\Var(Y)}}$
+\item $X$ 的标准化随机变量：$X^* := \dfrac{X-E(X)} {\sqrt{\Var(X)}}$
+\item $n$ 个随机变量的协方差矩阵：$\Sigma := (\sigma_{ij})_{n\times n}$，$\sigma_{ij} = \Cov(X_i,X_j)$
+
+\item 二维随机变量 $(X,Y)$（可以理解为两个随机变量）
+\item $(X,Y)$ 的联合分布函数 $F(X,Y) := P(X\le x, Y\le y)$ 
+\item 边际分布函数：$F_X(x)$，$F_Y(y)$
+\item 随机变量的函数的分布：$X$ 的 PDF 为 $f(x)$，$Y=g(X)$，求 $Y$ 的 PDF。
+
+\end{itemize}
+
+\section{重要分布}
+\subsection{正态分布}
+$X\sim N(\mu,\sigma^2)\quad f(x) = \dfrac{1}{\sqrt{2\pi}\sigma} e^{-\dfrac{(x-\mu)^2}{2\sigma^2}}, x\in\mathbb R, \mu\in\mathbb R, \sigma > 0 $
+\subsubsection{高斯积分}
+考虑广义积分 
+$$ A = \int_{-\infty}^{\infty} \dfrac{1}{\sqrt{2\pi}\sigma} e^{-\dfrac{(x-\mu)^2}{2\sigma^2}} \dif x$$
+做变量替换，令 $ t = \frac{x - \mu} {\sqrt2\sigma}$，得
+$$ A = \frac1{\sqrt\pi} \boxed{\color{blue} {\int_{-\infty}^{\infty} e^{-t^2} \dif t} } $$
+$\int_{-\infty}^{\infty} e^{-t^2} \dif t$ 称作高斯积分，也称概率积分。需要证明
+
+$$ I = \int_{-\infty}^{\infty} e^{-t^2} \dif t = \sqrt{\pi} $$
+为证此式，考虑
+$$ I^2 = \int_{-\infty}^{\infty} e^{-t^2} \dif t  \int_{-\infty}^{\infty} e^{-u^2} \dif u = \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} e^{-\qty(t^2+u^2)}\dif t\dif u $$ 
+转化成极坐标 $ t = r\cos\theta, u = r\sin\theta$，上式转化为
+$$ I^2 = \int_0^{2\pi}\dif\theta\int_0^\infty e^{-r^2}r\dif r = \pi,$$
+明所欲证。
+\subsubsection{正态分布的期望与方差}
+设 RV $X\sim N(\mu,\sigma^2)$。$X$ 的期望为 
+\[
+    E(X) = \dfrac{1}{\sqrt{2\pi}\sigma} \int_{-\infty}^\infty x e^{-\dfrac{(x-\mu)^2}{2\sigma^2}} \dif x
+\]
+做变量替换，令 $u = \frac{x-\mu}{\sqrt2\sigma}$，则 $x = \sqrt2\sigma u+\mu, \dd{x} = \sqrt2\sigma\dd{u}$。代入上式，得
+\[
+    E(X) = \frac1{\sqrt{\pi}}\intii\qty(\sqrt2\sigma u+\mu)e^{-u^2}\dd{u} = \mu
+\]
+$X$ 的方差为
+\[
+    \Var(X) =  \dfrac{1}{\sqrt{2\pi}\sigma} \intii \qty(x-\mu)^2 e^{-\dfrac{(x-\mu)^2}{2\sigma^2}} \dif x
+\]
+令 $u = \frac{x-\mu}{\sqrt2\sigma}$ 转化成
+\[\Var(X) =  \dfrac{2\sigma^2}{\sqrt\pi} \boxed{\color{blue}\intii u^2 e^{-u^2} \dif u}\]
+把 $u^2e^{-u^2}\dif u$ 写为 $-\frac12u\dif(e^{-u^2})$，用分部积分，得到
+\[\intii u^2 e^{-u^2} \dif u =-\frac12 \intii \dif\qty(ue^{-u^2})-e^{-u^2}\dif u   = \frac12 \intii e^{-u^2}\dif u = \frac{\sqrt\pi}{2} \tcbdocmarginnote{$ue^{-u^2}$是奇函数} \]
+于是得到
+\[\Var(X) = \sigma^2\]
+\begin{tcolorbox}[title=总结]
+对于形如 
+\[I = \int_0^\infty e^{-u^m}u^n\dif u\qq{$m,n$是正整数}\]
+的积分，可用上述分部积分的技巧计算。
+\end{tcolorbox}
+% 考虑积分
+% \[I = \intii u^2 e^{-u^2} \dif u\]
+\subsection{泊松分布}
+$P(X = k) = \dfrac{\lambda^k}{k!}e^{-\lambda}$，记做 $X\sim P(\lambda)$，$\lambda > 0$ 。
+\begin{align*}
+    E(X) &= e^{-\lambda}\sum_{k\ge 0} k\dfrac{\lambda^k}{k!} = e^{-\lambda}\sum_{k\ge 1} k\dfrac{\lambda^k}{k!} = \lambda e^{-\lambda}\sum_{k\ge 1} \dfrac{\lambda^{k-1}}{(k-1)!} =  \lambda e^{-\lambda}\sum_{k\ge 0} \dfrac{\lambda^{k}}{k!} = \lambda \\
+    E(X^2) &= e^{-\lambda} \sum_{k>=0} k^2   \dfrac{\lambda^k}{k!} = \lambda e^{-\lambda} \sum_{k\ge 0} (k+1) \dfrac{\lambda^{k}}{k!} = \lambda(\lambda + 1)
+\end{align*}
+从而 $ \Var(X) = E(X^2) - [E(X)]^2 = \lambda $ 。
+
+
+\chapter{数理统计基础}
+\section{概念}
+\begin{itemize}
+\item 总体，个体，个体的数量指标（\emph{个体的出现是随机的} $\implies$ 个体的数量指标是随机变量，记做 $X$）
+\item 抽样
+\item 样本，样本容量 $n$（样本是一个复数（plural）概念，抽到的个体是随机得到的，其数量指标是 $n$ 个随机变量 $X_1, \dots, X_n$）
+\item 样本容量 $n$，样本观测值 $x_1, \dots x_n$ 。
+\item 简单随机抽样，简单随机样本
+\item 统计量：函数 $T = T(X_1, \dots, X_n)$，其中不含未知参数。
+\item 样本均值：$\overline{X} = \frac1n \sum_{1\le i\le n} X_i$
+\item 样本方差：$S^2 = \frac{1}{n-1}\sum_{1\le i\le n} \qty(X_i - \overline{X})^2$，样本标准差 $S$
+\item 样本 $k$ 阶原点矩：$A_k = \frac{1}{n}\sum_{1\le i\le n} X_i^k$
+\item 极大次序统计量：$X_{(n)} = \max\qty{X_1, \dots, X_n}$
+\item 极小次序统计量：$X_{(1)} = \min\qty{X_1, \dots, X_n}$
+\item 抽样分布：统计量的分布（统计量也是一个随机变量）
+\end{itemize}
+
+\section{三大分布}
+\subsection{$\chi^2$分布}
+ $\chi^2 = X_1^2 + \dots + X_n^2, \quad X_i\sim N(0,1)$
+
+\subsubsection{推导}
+设 RV $X\sim \chi^2(n)$ 。考虑 $X$ 的 DF
+$$ P(X \le x)  = \frac1{\qty(\sqrt{2\pi})^n} \int_{V} e^{-\frac12(\sum_i x_i^2)}  \dif x_1 \dif x_2 \dots \dif x_n $$
+其中积分区域 $V$ 为 $n$ 维球 $\sum_i x_i^2 \le x$ 。
+
+由于积分区域和被积函数具有球对称性，上述积分在 $n$ 维球坐标系下表示为 
+$$ P(X \le x)  = c_n \int_{0}^{\sqrt{x}} e^{-\frac{r^2}{2}}  r^{n-1}\dif r $$
+其中 $c_n$ 是与 $n$ 有关的常数。考虑上述积分在 $x\to \infty$ 时的极限，有
+\begin{equation}
+    1 = c_n \boxed{\color{blue}{\int_{0}^{\infty} e^{-\frac{r^2}{2}}  r^{n-1}\dif r}} \label{Int:chi2}
+\end{equation}
+形如 $ \int_{0}^{\infty} e^{-\frac{r^2}{2}}  r^{n-1}\dif r $ 的广义积分没有解析形式，引入一种特殊函数来表示这一类积分。
+
+\subsubsection{$\Gamma$ 函数}
+$$ \Gamma(x) = \int_0^\infty t^{x-1} e^{-t} \dif t , \quad x > 0 $$
+注意：并非对任意 $x\in\mathbb{R}$ 上述广义积分都收敛，$\Gamma(0)$ 就不收敛。
+
+对 \eqref{Int:chi2} 右侧的积分做变量替换，令 $u = r^2/2$ ，则 $r = (2u)^{\frac12}, \dif r = (2u)^{-\frac12}\dif u$ 。于是
+$$ \int_{0}^{\infty} e^{-\frac{r^2}{2}}  r^{n-1}\dif r   = \int_{0}^{\infty} e^{-u}  (2u)^{n/2-1} \dif u = 2^{n/2-1} \Gamma\qty(\frac n2)$$
+于是 
+\[
+c_n = \frac1{2^{n/2-1} \Gamma\qty(\frac n2)}
+\]
+从而 $\chi^2(n)$ 的 PDF 为
+$$
+    f(x) = \frac{\dif P(X\le x)}{\dif x} = c_n \frac {  e^{-\frac{x}{2}}  x^{\frac{n-1}{2}} \dif\sqrt{x} } {\dif x} = \frac1{2^{n/2} \Gamma\qty(\frac n2)}  e^{-\frac{x}{2}}  x^{\frac{n}{2}-1}
+$$
+
+\subsection{$t$分布}
+    $X\sim N(0,1)$，$Y\sim \chi^2(n)$ 且 $X,Y$ 独立， $Z$ 定义为
+    \[Z = \frac{X}{\sqrt{\frac{Y}{n}}}\]
+    $Z$ 的分布称为\emph{自由度为 $n$ 的 $t$ 分布}。
+
+\subsubsection{p.d.f.}
+\[
+    \Pr(Z\le z)=\frac{1}{2^{n/2}\Gamma(n/2)}\frac{1}{\sqrt{2\pi}} \int_0^\infty \dd{y}e^{-\frac{y}{2}}  y^{\frac{n}{2}-1}\int_{-\infty}^{z\sqrt{y/n}}\dd{x} e^{-x^2/2}
+\]
+对 $z$ 求导数，得 
+\begin{align}
+    \dv{\Pr(Z\le z)}{z} &= \frac{1}{2^{n/2}\Gamma(n/2)}\frac{1}{\sqrt{2\pi}} \int_0^\infty \dd{y}e^{-\frac{y}{2}}  y^{\frac{n}{2}-1} \qty(e^{-\frac{z^2y}{2n}} \sqrt{y/n}) \notag\\
+&= \frac{1}{2^{n/2}\Gamma(n/2)}\frac{1}{\sqrt{2\pi}}\frac{1}{\sqrt{n}} \int_0^\infty \dd{y}e^{-\frac{z^2+n}{2n}y}  y^{\frac{n-1}{2}}\label{Int:t1} \tcbdocmarginnote{往$\Gamma$函数上凑}
+\end{align}
+作变量代换，令 $u = \frac{z^2+n}{2n}y$，则 $ y = \frac{2n}{z^2+n} u $，上面的积分变为
+\[\qty(\frac{2n}{z^2+n})^{\frac{n+1}{2}}\Gamma(\frac{n+1}{2})\]
+以此代入 \eqref{Int:t1}，并略加整理，即得 
+\begin{align*} \dv{\Pr(Z\le z)}{z} &= \frac{\Gamma\qty((n+1)/2)}{\Gamma(n/2)}\frac{1}{\sqrt{n\pi}}\qty(\frac{n}{z^2+n})^{(n+1)/2} \\
+    &= \frac{\Gamma\qty((n+1)/2)}{\Gamma(n/2)}\frac{1}{\sqrt{n\pi}}\qty(1+\frac{z^2}{n})^{-(n+1)/2}
+\end{align*}
+
+
+
+\begin{tcolorbox}[title=积分号下求导数]
+设
+\[F(y) = \int_a^b f(x, y)\dd{x}\]
+则
+\[\dv{F(y)}{y} = \int_a^b \pdv{f(x, y)}{y}\dd{x} \]    
+\end{tcolorbox}
+
+\subsection{F分布}
+$X\sim \chi^2(n)$，$Y\sim\chi^2(m)$，且 $X,Y$ 独立。称
+\[
+    Z = \frac{X/n}{Y/m}
+\]
+服从自由度为 $n,m$ 的 $F$ 分布。
+
+\subsubsection{p.d.f.}
+\[\Pr(Z\le z) = \int_0^\infty k_m(y)\dd{y} \int_0^{\frac{ny}{m}z} k_n(x)\dd{x} \]
+其中 $k_n(x)$ 表示 $\chi^2(n)$ 的 p.d.f.，于是 $Z$ 的 p.d.f. 为
+\begin{align}
+    f_{nm}(z) &= \int_0^\infty k_m(y)\dd{y}\qty(\frac{ny}{m} k_n\qty(\frac{nz}{m}y)) \notag\\
+    &= \frac nm \qty(\frac{nz}{m})^{n/2-1} K_nK_m \int_0^\infty e^{-\qty(1+\frac{nz}{m})y/2} y^{(m+n)/2-1} \dd{y} \label{Int:F1}
+\end{align}
+其中，$K_n = \qty(2^{n/2}\Gamma(n/2))^{-1}$ 表示 $\chi^2(n)$ 分布的p.d.f.中的系数。做变量替换，令 $u = \qty(1+\frac{nz}{m})y/2$ 则 $ y = \frac{2m}{m+nz} u$，稍加整理，上面的积分变为
+\[ 
+    \qty(\frac{2m}{m+nz} )^{(m+n)/2} \int_0^\infty e^{-u} u^{(m+n)/2-1}\dd{u} =   \qty(\frac{2m}{m+nz} )^{(m+n)/2}\Gamma\qty((m+n)/2)
+\]
+将各项代回 \eqref{Int:F1}，得
+\[
+    f_{nm}(z) = \frac{\Gamma\qty((m+n)/2)}{\Gamma(m/2)\Gamma(n/2)}
+n^{n/2} m^{m/2} z^{n/2-1} (m+nz)^{-(n+m)/2}
+\]
+\section{次序统计量}
+
+
+% \begin{markdown}
+
+% 设 RV $X$ 的 PDF 为 $f(x)$，$Y$ 的 PDF 为 $g(y)$，求 $Z=X+Y$ 的 PDF $h(z)$，考虑下面几种解法是否正确。
+
+% (1) $ h(z) = \int_{-\infty}^\infty f(x)g(z-x)\dif x$
+
+% (2) $ h(z) = \int_{-\infty}^\infty f(x)g_{Y\mid X}(z-x\mid x)\dif x$
+
+% 其中 $g_{Y\mid X}(z-x\mid x)$ 为给定 $X=x$ 的条件下 $Y$ 的条件密度函数，$g_{Y\mid X}(y\mid x) = \dfrac{f(x,y)}{f_X(x)}$ 。
+% 注意：这里的 $f(x,y)$ 不能由 $f(x)$ 和 $g(y)$ 算出来，需要另外给出。
+% \end{markdown}
+\end{document}
